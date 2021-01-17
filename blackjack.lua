@@ -87,4 +87,4 @@ local component = require("component")
 local gpu = component.gpu
 gpu.setResolution(100, 50)
 gpu.setBackground(0x999900)
-fill(1, 1, 100, 50, " ")
+gpu.fill(1, 1, 100, 50, " ")
