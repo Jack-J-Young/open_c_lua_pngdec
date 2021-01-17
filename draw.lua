@@ -8,13 +8,13 @@ function line(x1, y1, x2, y2)
   local y = 0
   for x = x1, x2, 1 do
     if (m*x+c - y > 1) then
-      for iy = y + 1, m*x+c, 1 do
+      local s = m/math.abs(m)
+      for iy = y + s, m*x+c, s do
         gpu.set(x, iy, " ")
       end
-    else
-    gpu.set(x, y, " ")
     end
     y = m*x+c
+    gpu.set(x, y, " ")
   end
   gpu.setBackground(0x000000)
 end
