@@ -20,4 +20,13 @@ function line(x1, y1, x2, y2)
 end
 
 gpu.fill(1,1,100,50, " ")
-line(3,2, 20, 45)
+local f = 1
+
+for i = 0; 400; 1 do
+  f = f + 1
+  if (f > 90) then
+    f = 1
+  end
+  line(2,25, 90, f)
+  os.sleep(0.0001)
+end
