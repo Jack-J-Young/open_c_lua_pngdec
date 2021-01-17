@@ -7,7 +7,7 @@ function line(x1, y1, x2, y2)
   local c = (y1-m*x1)
   local y = 0
   for x = x1, x2, 1 do
-    if (m*x+c - y > 1) do
+    if (m*x+c - y > 1) then
       for iy = y, m*x+c, 1 do
         gpu.set(x, iy, " ")
       end
