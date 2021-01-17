@@ -19,12 +19,13 @@ function line(x1, y1, x2, y2)
   gpu.setBackground(0x000000)
 end
 
-gpu.fill(1,1,100,50, " ")
+
 local f = 1
 
-for i = 0; 400; 1 do
+for i = 0, 400, 1 do
+  gpu.fill(1,1,100,50, " ")
   f = f + 1
-  if (f > 90) then
+  if (f > 40) then
     f = 1
   end
   line(2,25, 90, f)
