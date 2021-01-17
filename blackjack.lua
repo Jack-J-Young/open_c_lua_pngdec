@@ -86,5 +86,5 @@ printDeck(your_hand)
 local component = require("component")
 local gpu = component.gpu
 gpu.setResolution(100, 50)
-gpu.setBackground(0x999900)
+gpu.setBackground(0x2bc333  )
 gpu.fill(1, 1, 100, 50, " ")
