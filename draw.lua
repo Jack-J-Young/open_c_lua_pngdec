@@ -31,18 +31,17 @@ function ellipse(x, y, w, h)
   gpu.setBackground(0x000000)
 end
 
-function number(x, y, n)
+function text(x, y, s)
   --gpu.setBackground(0xffffff)
-  tostring(math.floor(n))
-  for i = 1, n.len()-1, 1 do
-    gpu.set(x + i, y, n.char(i))
+  for i = 1, s.len()-1, 1 do
+    gpu.set(x + i, y, s.char(i))
   end
   --gpu.setBackground(0x000000)
 end
 
 gpu.fill(1,1,100,50, " ")
 ellipse(50, 25, 50, 25)
-number(2,2,"Hello")
+text(2,2,"Hello")
 os.sleep(5)
 
 --[[
