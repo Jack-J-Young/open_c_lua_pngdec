@@ -5,7 +5,7 @@ function line(x1, y1, x2, y2)
   gpu.setBackground(0xffffff)
   local m = (y2-y1)/(x2-x1)
   local c = (y1-m*x1)
-  local y = 0
+  local y = m*math.min(x1, x2)+c
   for x = math.min(x1, x2), math.max(x1, x2), 1 do
     if (m*x+c - y > math.abs(1)) then
       local s = m/math.abs(m)
@@ -19,6 +19,21 @@ function line(x1, y1, x2, y2)
   gpu.setBackground(0x000000)
 end
 
+function circle(x, y, r)
+  gpu.setBackground(0xffffff)
+  for iy = y-r, y+r, 1 do
+    for ix = x-r, x+r, 1 do
+      if (math.sqrt(ix*ix + iy*iy) < r) then
+        gpu.set(ix, iy, " ")
+      end
+    end
+  end
+  gpu.setBackground(0x000000)
+end
+
+gpu.fill(1,1,100,50, " ")
+gpu.circle(50, 25, 10)
+os.sleep(1)
 
 local f = 1
 
