@@ -23,7 +23,7 @@ function ellipse(x, y, w, h)
   gpu.setBackground(0xffffff)
   for iy = y-h, y+h, 1 do
     for ix = x-w, x+w, 1 do
-      if (math.sqrt(math.pow(x-ix, 2) + math.pow((y-iy), 2)) < w) then
+      if (math.sqrt(math.pow(x-ix, 2) + math.pow(w/h*(y-iy), 2)) < w) then
         gpu.set(ix, iy, " ")
       end
     end
@@ -33,8 +33,8 @@ end
 
 function text(x, y, s)
   --gpu.setBackground(0xffffff)
-  for i = 1, s.len()-1, 1 do
-    gpu.set(x + i, y, s.char(i))
+  for i = 1, s.len(), 1 do
+    gpu.set(x + i, y, s:sub(i,i))
   end
   --gpu.setBackground(0x000000)
 end
