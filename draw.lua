@@ -23,7 +23,7 @@ function circle(x, y, r)
   gpu.setBackground(0xffffff)
   for iy = y-r, y+r, 1 do
     for ix = x-r, x+r, 1 do
-      if (math.sqrt(ix*ix + iy*iy) < r) then
+      if (math.sqrt(math.pow(x-ix) + math.pow(y-iy)) < r) then
         gpu.set(ix, iy, " ")
       end
     end
@@ -33,7 +33,7 @@ end
 
 gpu.fill(1,1,100,50, " ")
 gpu.circle(50, 25, 10)
-os.sleep(1)
+os.sleep(5)
 
 local f = 1
 
