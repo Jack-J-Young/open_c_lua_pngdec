@@ -19,11 +19,11 @@ function line(x1, y1, x2, y2)
   gpu.setBackground(0x000000)
 end
 
-function circle(x, y, r)
+function ellipse(x, y, w, h)
   gpu.setBackground(0xffffff)
-  for iy = y-r, y+r, 1 do
-    for ix = x-r, x+r, 1 do
-      if (math.sqrt(math.pow(x-ix) + math.pow(y-iy)) < r) then
+  for iy = y-h/2, y+h/2, 1 do
+    for ix = x-w/2, x+w/2, 1 do
+      if (math.sqrt(math.pow(x-ix) + math.pow(h/w*(y-iy))) < w/2) then
         gpu.set(ix, iy, " ")
       end
     end
@@ -32,7 +32,7 @@ function circle(x, y, r)
 end
 
 gpu.fill(1,1,100,50, " ")
-gpu.circle(50, 25, 10)
+ellipse(50, 25, 50, 25)
 os.sleep(5)
 
 local f = 1
