@@ -21,9 +21,9 @@ end
 
 function ellipse(x, y, w, h)
   gpu.setBackground(0xffffff)
-  for iy = y-h/2, y+h/2, 1 do
-    for ix = x-w/2, x+w/2, 1 do
-      if (math.sqrt(math.pow(x-ix) + math.pow(h/w*(y-iy))) < w/2) then
+  for iy = y-h, y+h, 1 do
+    for ix = x-w, x+w, 1 do
+      if (math.sqrt(math.pow(x-ix, 2) + math.pow((y-iy), 2)) < w) then
         gpu.set(ix, iy, " ")
       end
     end
@@ -31,10 +31,21 @@ function ellipse(x, y, w, h)
   gpu.setBackground(0x000000)
 end
 
+function number(x, y, n)
+  --gpu.setBackground(0xffffff)
+  tostring(math.floor(n))
+  for i = 1, n.len()-1, 1 do
+    gpu.set(x + i, y, n.char(i))
+  end
+  --gpu.setBackground(0x000000)
+end
+
 gpu.fill(1,1,100,50, " ")
 ellipse(50, 25, 50, 25)
+number(2,2,"Hello")
 os.sleep(5)
 
+--[[
 local f = 1
 
 for i = 0, 400, 1 do
@@ -45,4 +56,4 @@ for i = 0, 400, 1 do
   end
   line(2,25, 90, f)
   os.sleep(0.0001)
-end
+end]]--
