@@ -52,8 +52,8 @@ local image = assert(io.open("C:\\Users\\jackj\\Documents\\Repos\\test_image.png
 --a = image:read("*a")
 local t = fileToDecTable(image)
 print(t[17])
-print("Width: " .. fourByteToInt(t, 17))
-print("Height: " .. fourByteToInt(t, 21))
+local width = fourByteToInt(t, 17)
+local height = fourByteToInt(t, 21)
 print(findDecSequence(t, "IDAT"))
 local n = findDecSequence(t, "IDAT")
 local s = idatString(t, n)
@@ -61,30 +61,17 @@ local s = idatString(t, n)
 local component = require("component")
 local data = component.data
 
-s = data.deflate(s)
-
-for i = 0, s:len(), 1 do
-  print(s:sub(i,i))
+s = data.inflate(s)
+for y = 1, height, 1 do
+  for x = 1, width, 1 do
+    local f = s:sub(y*width + x,y*width + x)
+    if not(f == null) then
+      io.write(string.format("%x", string.byte(f)))
+      if (x%3 == 0) then
+        io.write(", ")
+      end
+    end
+    --print(f)
+  end
+  print()
 end
-
---[[
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(string.byte(image:read(1)))
-print(image:read("*all"))
---print(byteRead(image, 1))]]--
