@@ -49,6 +49,7 @@ function fileToDecTable(file)
 end
 
 local image = assert(io.open("C:\\Users\\jackj\\Documents\\Repos\\test_image.png", "rb"))
+--local image = assert(io.open("\\test_image.png", "rb"))
 --a = image:read("*a")
 local t = fileToDecTable(image)
 print(t[17])
@@ -63,7 +64,7 @@ local data = component.data
 
 s = data.inflate(s)
 for y = 1, height, 1 do
-  for x = 1, width, 1 do
+  for x = 1, width - 1, 1 do
     local f = s:sub(y*width + x,y*width + x)
     if not(f == null) then
       io.write(string.format("%x", string.byte(f)))
