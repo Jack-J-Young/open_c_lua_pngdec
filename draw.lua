@@ -33,7 +33,25 @@ end
 
 function text(x, y, s)
   --gpu.setBackground(0xffffff)
-  for i = 1, s.len(), 1 do
+  local digits = {
+    {false, false, false, true, true, false, false, false,
+    false, true, true, true, true, false, false, false,
+    false, false, false, true, true, false, false, false,
+    false, false, false, true, true, false, false, false,
+    false, true, true, true, true, true, true, false},
+    {false, false, false, true, true, false, false, false,
+    false, true, true, true, true, false, false, false,
+    false, false, false, true, true, false, false, false,
+    false, false, false, true, true, false, false, false,
+    false, true, true, true, true, true, true, false},
+    {false, false, false, true, true, false, false, false,
+    false, true, true, true, true, false, false, false,
+    false, false, false, true, true, false, false, false,
+    false, false, false, true, true, false, false, false,
+    false, true, true, true, true, true, true, false},
+  }
+  }
+  for i = 1, string.len(s), 1 do
     gpu.set(x + i, y, s:sub(i,i))
   end
   --gpu.setBackground(0x000000)
