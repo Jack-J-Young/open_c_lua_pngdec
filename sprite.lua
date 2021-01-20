@@ -61,10 +61,10 @@ local s = idatString(t, n)
 
 s = s:sub(3, s:len()-7)
 
---local component = require("component")
---local data = component.data
+local component = require("component")
+local data = component.data
 
---s = data.inflate(s)
+s = data.inflate(s)
 
 for i = 1, s:len(), 1 do
   print(string.byte(s:sub(i,i)))
