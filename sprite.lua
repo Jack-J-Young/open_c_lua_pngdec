@@ -8,13 +8,13 @@ function scanlineFilter(scan_line, last_scan)
       local a = {0, 0, 0}
       if not(i == 1)  then a = scan_line[i - 1] end
       for i, ch in pairs(channels) do
-        ch[i] = (ch[i] + a[i])%256
+        channels[i] = (channels[i] + a[i])%256
       end
     elseif (filter == 2) then
       local b = {0, 0, 0}
       if not(y == 1)  then b = last_scan[i] end
       for i, ch in pairs(channels) do
-        ch[i] = (ch[i] + b[i])%256
+        channels[i] = (channels[i] + b[i])%256
       end
     elseif (filter == 3) then
       local a = {0, 0, 0}
@@ -22,7 +22,7 @@ function scanlineFilter(scan_line, last_scan)
       if not(i == 1)  then a = scan_line[i - 1] end
       if not(y == 1)  then b = last_scan[i] end
       for i, ch in pairs(channels) do
-        ch[i] = math.floor(a[i] + b[i])%256
+        channels[i] = math.floor(a[i] + b[i])%256
       end
     elseif (filter == 4) then
       local a = {0, 0, 0}
@@ -37,10 +37,10 @@ function scanlineFilter(scan_line, last_scan)
         local pb = math.abs(p - b[i])
         local pc = math.abs(p - c[i])
         local pr = 0
-        if (pa <= pb and pa <= pc) then pr = a
-        elseif (pb <= pc) then pr = b
-        else pr = c
-        ch[i] = (ch[i] + pr)%256
+        if (pa <= pb and pa <= pc) then pr = a[i]
+        elseif (pb <= pc) then pr = b[i]
+        else pr = c[i] end
+        channels[i] = (channels[i] + pr)%256
       end
     end
     io.write(" r" .. channels[1] .. "g" .. channels[2] .. "b" .. channels[3])
@@ -68,9 +68,9 @@ function stringToScanline(string, y, width)
 end
 
 function drawScanline(x, y, scanline, gpu)
-  for i, channels in pairs(scan_line) do
+  for i, channels in pairs(scanline) do
     gpu.setBackground(channels[1] * 256^2 + channels[2] * 256 + channels[3])
-    gpu.set(x + i, y, " ")
+    gpu.set(x + i - 1, y, " ")
   end
 end
 
@@ -143,10 +143,6 @@ local gpu = component.gpu
 
 s = data.inflate(s)
 
---for i = 1, s:len(), 1 do
---  print(string.byte(s:sub(i,i)))
---end
-
 local last_scan
 for y = 1, height, 1 do
   local scan = stringToScanline(s, y, width)
@@ -155,18 +151,3 @@ for y = 1, height, 1 do
   last_scan = scan
   print()
 end
-
---[[
-for y = 1, height, 1 do
-  for x = 1, width - 1, 1 do
-    local f = s:sub(y*width + x,y*width + x)
-    if not(f == null) then
-      io.write(string.format("%x", string.byte(f)))
-      if (x%3 == 0) then
-        io.write(", ")
-      end
-    end
-    --print(f)
-  end
-  print()
-end]]--
