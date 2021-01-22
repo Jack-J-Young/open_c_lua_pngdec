@@ -1,14 +1,14 @@
 function scanlineFilter(scan_line, last_scan)
   local filter = scan_line[1]
-  scan_line:remove(1)
-  for i, channels pairs(scan_line) do
-    if (filter == 0 or i == 1) then
-    elseif (filter == 1) then
+  table.remove(scan_line, 1)
+  for i, channels in pairs(scan_line) do
+    if (filter == 0) then
+    elseif (filter == 1 and not i == 1) then
       local a = scan_line[i - 1]
       channels[1] = (channels[1] + a[1])%256
       channels[2] = (channels[2] + a[2])%256
       channels[3] = (channels[2] + a[3])%256
-    elseif (filter == 2) then
+    elseif (filter == 2 and not y == 1) then
       local b = last_scan[i]
       channels[1] = (channels[1] + b[1])%256
       channels[2] = (channels[2] + b[2])%256
@@ -22,7 +22,8 @@ function scanlineFilter(scan_line, last_scan)
     elseif (filter == 4) then
 
     end
-    io.write(" " .. "r" .. channels[1] .. "g" .. channels[2] .. "b" .. channels[3])
+    io.write("F: " .. filter .. " r" .. channels[1] .. "g" .. channels[2] .. "b" .. channels[3])
+      io.write(channels[1])
   end
 
 end
@@ -33,16 +34,24 @@ function stringToScanline(string, y, width)
   local pos = (y - 1) * (width * 3 + 1) + 1
   -- store filter type
   scanline[1] = (string.byte(s:sub(pos, pos)))
+  pos = pos + 1
   for i = 1, width, 1 do
     -- get rgb values to fil into array
     local rgb = {}
-    r[1] = string.byte(s:sub(pos, pos))
-    g[1] = string.byte(s:sub(pos + 1, pos + 1))
-    b[1] = string.byte(s:sub(pos + 2, pos + 2))
+    rgb[1] = string.byte(s:sub(pos, pos))
+    rgb[2] = string.byte(s:sub(pos + 1, pos + 1))
+    rgb[3] = string.byte(s:sub(pos + 2, pos + 2))
     scanline[i + 1] = rgb
     pos = pos + 3
   end
   return scanline
+end
+
+function drawScanline(x, y, scanline, gpu)
+  for i, channels in pairs(scan_line) do
+    gpu.setBackground(channels[1] * 256^2 + channels[2] * 256 + channels[3])
+    gpu.set(x + i, y, " ")
+  end
 end
 
 function idatString(table, start)
@@ -95,8 +104,8 @@ function fileToDecTable(file)
   return table
 end
 
-local image = assert(io.open("C:\\Users\\jackj\\Documents\\Repos\\test_image.png", "rb"))
---local image = assert(io.open("\\test_image.png", "rb"))
+--local image = assert(io.open("C:\\Users\\jackj\\Documents\\Repos\\test_image.png", "rb"))
+local image = assert(io.open("\\test_image.png", "rb"))
 --a = image:read("*a")
 local t = fileToDecTable(image)
 --print(t[17])
@@ -110,6 +119,7 @@ s = s:sub(1, s:len()-7)
 
 local component = require("component")
 local data = component.data
+local gpu = component.gpu
 
 s = data.inflate(s)
 
@@ -121,6 +131,7 @@ local last_scan
 for y = 1, height, 1 do
   local scan = stringToScanline(s, y, width)
   scanlineFilter(scan, last_scan)
+  drawScanline(1, y, scan, gpu)
   last_scan = scan
   print()
 end
