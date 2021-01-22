@@ -1,24 +1,48 @@
-function lineFilter(string, type, pos , width)
-  local r = string.byte(s:sub(pos, pos))
-  local g = string.byte(s:sub(pos + 1, pos + 1))
-  local b = string.byte(s:sub(pos + 2, pos + 2))
-  if (type == 0) then
-  elseif (type == 1) then
-    r = (r + string.byte(s:sub(pos + 4, pos + 4)))%255
-    g = (g + string.byte(s:sub(pos + 5, pos + 5)))%255
-    b = (b + string.byte(s:sub(pos + 6, pos + 6)))%255
-  elseif (type == 2) then
-    r = (r + string.byte(s:sub(pos - (width * 3) + 1, pos - (width * 3) + 1)))%255
-    g = (g + string.byte(s:sub(pos - (width * 3) + 1 + 1, pos - (width * 3) + 1 + 1)))%255
-    b = (b + string.byte(s:sub(pos - (width * 3) + 1 + 2, pos - (width * 3) + 1 + 2)))%255
-  elseif (type == 3) then
-    r = (r + math.floor((string.byte(s:sub(pos + 4, pos + 4)) + string.byte(s:sub(pos - (width * 3) + 1, pos - (width * 3) + 1)))/2))%255
-    g = (g + math.floor((string.byte(s:sub(pos + 5, pos + 5)) + string.byte(s:sub(pos - (width * 3) + 1 + 1, pos - (width * 3) + 1 + 1)))/2))%255
-    b = (b + math.floor((string.byte(s:sub(pos + 6, pos + 6)) + string.byte(s:sub(pos - (width * 3) + 1 + 2, pos - (width * 3) + 1 + 2)))/2))%255
-  elseif (type == 4) then
+function scanlineFilter(scan_line, last_scan)
+  local filter = scan_line[1]
+  scan_line:remove(1)
+  for i, channels pairs(scan_line) do
+    if (filter == 0 or i == 1) then
+    elseif (filter == 1) then
+      local a = scan_line[i - 1]
+      channels[1] = (channels[1] + a[1])%256
+      channels[2] = (channels[2] + a[2])%256
+      channels[3] = (channels[2] + a[3])%256
+    elseif (filter == 2) then
+      local b = last_scan[i]
+      channels[1] = (channels[1] + b[1])%256
+      channels[2] = (channels[2] + b[2])%256
+      channels[3] = (channels[2] + b[3])%256
+    elseif (filter == 3) then
+      local a = scan_line[i - 1]
+      local b = last_scan[i]
+      channels[1] = math.floor(a[1] + b[1])%256
+      channels[2] = math.floor(a[2] + b[2])%256
+      channels[3] = math.floor(a[3] + b[3])%256
+    elseif (filter == 4) then
 
+    end
+    io.write(" " .. "r" .. channels[1] .. "g" .. channels[2] .. "b" .. channels[3])
   end
-  return r*265^2+g*265+b
+
+end
+
+-- from an inflated string gets filter type and stores scanline values for filtering
+function stringToScanline(string, y, width)
+  local scanline = {}
+  local pos = (y - 1) * (width * 3 + 1) + 1
+  -- store filter type
+  scanline[1] = (string.byte(s:sub(pos, pos)))
+  for i = 1, width, 1 do
+    -- get rgb values to fil into array
+    local rgb = {}
+    r[1] = string.byte(s:sub(pos, pos))
+    g[1] = string.byte(s:sub(pos + 1, pos + 1))
+    b[1] = string.byte(s:sub(pos + 2, pos + 2))
+    scanline[i + 1] = rgb
+    pos = pos + 3
+  end
+  return scanline
 end
 
 function idatString(table, start)
@@ -82,22 +106,23 @@ local height = fourByteToInt(t, 21)
 local n = findDecSequence(t, "IDAT")
 local s = idatString(t, n)
 
-s = s:sub(3, s:len()-7)
+s = s:sub(1, s:len()-7)
 
 local component = require("component")
 local data = component.data
 
 s = data.inflate(s)
 
-for i = 1, s:len(), 1 do
-  print(string.byte(s:sub(i,i)))
-end
+--for i = 1, s:len(), 1 do
+--  print(string.byte(s:sub(i,i)))
+--end
 
+local last_scan
 for y = 1, height, 1 do
-  local filter = 1 + (height - 1) * width * 3
-  for x = 1, (width - 1)/3, 1 do
-    print(lineFilter((x - 1) * 3 + 1))
-  end
+  local scan = stringToScanline(s, y, width)
+  scanlineFilter(scan, last_scan)
+  last_scan = scan
+  print()
 end
 
 --[[
