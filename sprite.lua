@@ -1,3 +1,26 @@
+function lineFilter(string, type, pos , width)
+  local r = string.byte(s:sub(pos, pos))
+  local g = string.byte(s:sub(pos + 1, pos + 1))
+  local b = string.byte(s:sub(pos + 2, pos + 2))
+  if (type == 0) then
+  elseif (type == 1) then
+    r = (r + string.byte(s:sub(pos + 4, pos + 4)))%255
+    g = (g + string.byte(s:sub(pos + 5, pos + 5)))%255
+    b = (b + string.byte(s:sub(pos + 6, pos + 6)))%255
+  elseif (type == 2) then
+    r = (r + string.byte(s:sub(pos - (width * 3) + 1, pos - (width * 3) + 1)))%255
+    g = (g + string.byte(s:sub(pos - (width * 3) + 1 + 1, pos - (width * 3) + 1 + 1)))%255
+    b = (b + string.byte(s:sub(pos - (width * 3) + 1 + 2, pos - (width * 3) + 1 + 2)))%255
+  elseif (type == 3) then
+    r = (r + math.floor((string.byte(s:sub(pos + 4, pos + 4)) + string.byte(s:sub(pos - (width * 3) + 1, pos - (width * 3) + 1)))/2))%255
+    g = (g + math.floor((string.byte(s:sub(pos + 5, pos + 5)) + string.byte(s:sub(pos - (width * 3) + 1 + 1, pos - (width * 3) + 1 + 1)))/2))%255
+    b = (b + math.floor((string.byte(s:sub(pos + 6, pos + 6)) + string.byte(s:sub(pos - (width * 3) + 1 + 2, pos - (width * 3) + 1 + 2)))/2))%255
+  elseif (type == 4) then
+
+  end
+  return r*265^2+g*265+b
+end
+
 function idatString(table, start)
   out = ""
   for i, dec in pairs(table) do
@@ -68,6 +91,13 @@ s = data.inflate(s)
 
 for i = 1, s:len(), 1 do
   print(string.byte(s:sub(i,i)))
+end
+
+for y = 1, height, 1 do
+  local filter = 1 + (height - 1) * width * 3
+  for x = 1, (width - 1)/3, 1 do
+    print(lineFilter((x - 1) * 3 + 1))
+  end
 end
 
 --[[
