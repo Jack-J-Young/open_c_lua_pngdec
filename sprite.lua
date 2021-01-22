@@ -1,29 +1,49 @@
 function scanlineFilter(scan_line, last_scan)
   local filter = scan_line[1]
+  io.write("F: " .. filter)
   table.remove(scan_line, 1)
   for i, channels in pairs(scan_line) do
     if (filter == 0) then
-    elseif (filter == 1 and not i == 1) then
-      local a = scan_line[i - 1]
-      channels[1] = (channels[1] + a[1])%256
-      channels[2] = (channels[2] + a[2])%256
-      channels[3] = (channels[2] + a[3])%256
-    elseif (filter == 2 and not y == 1) then
-      local b = last_scan[i]
-      channels[1] = (channels[1] + b[1])%256
-      channels[2] = (channels[2] + b[2])%256
-      channels[3] = (channels[2] + b[3])%256
+    elseif (filter == 1) then
+      local a = {0, 0, 0}
+      if not(i == 1)  then a = scan_line[i - 1] end
+      for i, ch in pairs(channels) do
+        ch[i] = (ch[i] + a[i])%256
+      end
+    elseif (filter == 2) then
+      local b = {0, 0, 0}
+      if not(y == 1)  then b = last_scan[i] end
+      for i, ch in pairs(channels) do
+        ch[i] = (ch[i] + b[i])%256
+      end
     elseif (filter == 3) then
-      local a = scan_line[i - 1]
-      local b = last_scan[i]
-      channels[1] = math.floor(a[1] + b[1])%256
-      channels[2] = math.floor(a[2] + b[2])%256
-      channels[3] = math.floor(a[3] + b[3])%256
+      local a = {0, 0, 0}
+      local b = {0, 0, 0}
+      if not(i == 1)  then a = scan_line[i - 1] end
+      if not(y == 1)  then b = last_scan[i] end
+      for i, ch in pairs(channels) do
+        ch[i] = math.floor(a[i] + b[i])%256
+      end
     elseif (filter == 4) then
-
+      local a = {0, 0, 0}
+      local b = {0, 0, 0}
+      local c = {0, 0, 0}
+      if not(i == 1)  then a = scan_line[i - 1] end
+      if not(y == 1)  then b = last_scan[i] end
+      if not(y == 1 or i == 1)  then c = last_scan[i - 1] end
+      for i, ch in pairs(channels) do
+        local p = a[i] + b[i] - c[i]
+        local pa = math.abs(p - a[i])
+        local pb = math.abs(p - b[i])
+        local pc = math.abs(p - c[i])
+        local pr = 0
+        if (pa <= pb and pa <= pc) then pr = a
+        elseif (pb <= pc) then pr = b
+        else pr = c
+        ch[i] = (ch[i] + pr)%256
+      end
     end
-    io.write("F: " .. filter .. " r" .. channels[1] .. "g" .. channels[2] .. "b" .. channels[3])
-      io.write(channels[1])
+    io.write(" r" .. channels[1] .. "g" .. channels[2] .. "b" .. channels[3])
   end
 
 end
